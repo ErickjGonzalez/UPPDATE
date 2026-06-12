@@ -29,31 +29,26 @@ class Convocatoria extends Model
         'fecha_fin' => 'date'
     ];
 
-    // Relación con el usuario
     public function usuario()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Método para obtener la URL del PDF
     public function getPdfUrlAttribute()
     {
         return $this->pdf ? asset('storage/convocatorias/pdf/' . $this->pdf) : null;
     }
 
-    // Método para obtener la URL de la imagen
     public function getImagenUrlAttribute()
     {
         return $this->imagen ? asset('storage/convocatorias/imagenes/' . $this->imagen) : null;
     }
 
-    // Método para saber si tiene PDF
     public function tienePdf()
     {
         return !empty($this->pdf);
     }
 
-    // Método para saber si tiene imagen
     public function tieneImagen()
     {
         return !empty($this->imagen);

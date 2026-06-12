@@ -20,7 +20,5 @@ class UserPolicy
         return $user->role === 'superadmin';
     }
 
-    // Aquí podrías agregar más métodos en el futuro, como:
-    // public function update(User $user, User $model) { ... }
-    // public function delete(User $user, User $model) { ... }
+
 }

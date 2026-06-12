@@ -716,14 +716,12 @@
   </footer>
 
   <script>
-    // Animación para las cards al cargar
     document.addEventListener('DOMContentLoaded', function() {
       const cards = document.querySelectorAll('.dashboard-card');
       cards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
       });
       
-      // Efecto hover mejorado para enlaces
       const quickLinks = document.querySelectorAll('.quick-link-item');
       quickLinks.forEach(link => {
         link.addEventListener('mouseenter', function() {
@@ -739,7 +737,6 @@
         });
       });
       
-      // Actualizar stats (simulación)
       function updateStats() {
         const statCards = document.querySelectorAll('.stat-card');
         statCards.forEach(card => {

@@ -774,12 +774,10 @@
   </footer>
 
   <script>
-    // Confirmación de eliminación
     function confirmDelete() {
       return confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.');
     }
 
-    // Filtrado y búsqueda en tiempo real
     document.addEventListener('DOMContentLoaded', function() {
       const searchInput = document.getElementById('searchInput');
       const roleFilter = document.getElementById('roleFilter');
@@ -817,13 +815,11 @@
         roleFilter.addEventListener('change', filterUsers);
       }
       
-      // Animación para filas al cargar
       tableRows.forEach((row, index) => {
         row.style.animationDelay = `${index * 0.05}s`;
         row.classList.add('fade-in');
       });
       
-      // Efectos hover para botones de acción
       const actionButtons = document.querySelectorAll('.btn-action');
       actionButtons.forEach(button => {
         button.addEventListener('mouseenter', function() {

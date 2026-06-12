@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * La ruta a la que se redirige después del login.
      *
      * @var string
      */
@@ -19,7 +18,6 @@ class RouteServiceProvider extends ServiceProvider
 
 
     /**
-     * Define las rutas para la aplicación.
      */
     public function boot(): void
     {

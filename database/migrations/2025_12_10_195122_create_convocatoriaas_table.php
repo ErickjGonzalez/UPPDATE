@@ -17,8 +17,8 @@ return new class extends Migration
             $table->date('fecha_fin')->nullable();
             $table->string('lugar')->nullable();
             $table->enum('estado', ['borrador', 'publicado'])->default('borrador');
-            $table->string('pdf')->nullable(); // Solo almacena el nombre del archivo
-            $table->string('imagen')->nullable(); // Solo almacena el nombre del archivo
+            $table->string('pdf')->nullable();
+            $table->string('imagen')->nullable(); 
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

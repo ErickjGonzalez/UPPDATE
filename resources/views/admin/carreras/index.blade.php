@@ -873,12 +873,10 @@
   </footer>
 
   <script>
-    // Confirmación de eliminación
     function confirmDelete() {
       return confirm('¿Estás seguro de eliminar esta carrera? Esta acción eliminará todos los datos asociados y no se puede deshacer.');
     }
 
-    // Filtrado y búsqueda en tiempo real
     document.addEventListener('DOMContentLoaded', function() {
       const searchInput = document.getElementById('searchInput');
       const tableRows = document.querySelectorAll('#careersTable tbody tr');
@@ -909,13 +907,11 @@
         searchInput.addEventListener('input', filterCareers);
       }
       
-      // Animación para filas al cargar
       tableRows.forEach((row, index) => {
         row.style.animationDelay = `${index * 0.05}s`;
         row.classList.add('fade-in');
       });
       
-      // Efectos hover para botones de acción
       const actionButtons = document.querySelectorAll('.btn-action');
       actionButtons.forEach(button => {
         button.addEventListener('mouseenter', function() {
@@ -927,7 +923,6 @@
         });
       });
       
-      // Efecto hover para filas de la tabla
       const tableRowsAll = document.querySelectorAll('.careers-table tbody tr');
       tableRowsAll.forEach(row => {
         row.addEventListener('mouseenter', function() {

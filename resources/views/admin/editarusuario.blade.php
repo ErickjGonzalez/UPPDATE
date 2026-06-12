@@ -1162,7 +1162,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Configuración de validación - SUPER ROBUSTA
       const validationConfig = {
         required: {
           message: 'Este campo es obligatorio',
@@ -1226,22 +1225,18 @@
         }
       };
 
-      // Elementos del formulario
       const form = document.getElementById('usuarioForm');
       const submitBtn = document.getElementById('submitBtn');
       const submitText = document.getElementById('submitText');
       const fields = form.querySelectorAll('[data-validation]');
       const loadingOverlay = document.getElementById('loadingOverlay');
       
-      // Contadores para el resumen
       let validCount = 0;
       let warningCount = 0;
       let errorCount = 0;
       
-      // Objeto para almacenar el estado de validación de cada campo
       const fieldStatus = {};
       
-      // DESCRIPCIONES DE ROLES ACTUALIZADAS
       const roleDescriptions = {
         'director': 'Acceso a gestión de carreras, estudiantes y docentes de su facultad.',
         'rector': 'Acceso completo a todas las facultades, reportes institucionales y estadísticas.',
@@ -1250,7 +1245,6 @@
         'aspirante': 'Acceso limitado para consulta de información y postulación a programas.'
       };
       
-      // Inicializar contadores de caracteres para TODOS los campos
       function initCharCounters() {
         const allTextElements = form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"]');
         
@@ -1265,12 +1259,10 @@
           
           if (!currentSpan) return;
           
-          // Actualizar contador inicial
           const currentLength = element.value.length;
           currentSpan.textContent = currentLength;
           updateCounterStyle(counterId, currentLength, maxLength);
           
-          // Escuchar cambios en tiempo real
           element.addEventListener('input', function() {
             const length = this.value.length;
             currentSpan.textContent = length;
@@ -1279,7 +1271,6 @@
         });
       }
       
-      // Actualizar estilo del contador de caracteres
       function updateCounterStyle(counterId, current, max) {
         const counter = document.getElementById(counterId);
         if (!counter) return;
@@ -1297,17 +1288,14 @@
         }
       }
       
-      // Función para mostrar mensaje de validación mejorado
       function showValidationMessage(field, isValid, isWarning = false, message = '') {
         const validationId = field.name ? field.name + '-validation' : field.id + '-validation';
         const validationDiv = document.getElementById(validationId);
         
         if (!validationDiv) return;
         
-        // Limpiar clases anteriores
         validationDiv.className = 'validation-message';
         
-        // Determinar icono y clase
         let iconClass = 'fa-info-circle';
         let divClass = 'validation-info';
         
@@ -1327,7 +1315,6 @@
         validationDiv.classList.add(divClass);
         validationDiv.innerHTML = `<i class="fas ${iconClass}"></i><span>${message}</span>`;
         
-        // Actualizar clases del campo
         field.classList.remove('invalid', 'valid', 'warning');
         
         if (!isValid) {
@@ -1345,17 +1332,13 @@
         }
       }
       
-      // Función para validar un campo individual con filtros robustos
       function validateField(field) {
         const validationRules = field.dataset.validation.split(',');
         let value = field.value;
         
-        // Aplicar filtros de limpieza ANTES de validar
         if (field.type !== 'select-one') {
-          // Eliminar emojis y caracteres especiales peligrosos
-          value = value.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/ug, '');
+=          value = value.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/ug, '');
           
-          // Eliminar caracteres especiales según el tipo de campo
           if (field.name === 'name') {
             value = value.replace(/[@#$%^&*_+=|\\:;"'<>,?0-9]/g, '');
           } else if (field.name === 'username') {
@@ -1366,10 +1349,8 @@
             value = value.replace(/[^\d()\s-]/g, '');
           }
           
-          // Eliminar caracteres peligrosos para todos
           value = value.replace(/[<>[\]{}]/g, '');
           
-          // Actualizar el valor en el campo si cambió
           if (value !== field.value) {
             field.value = value;
             if (field.name) {
@@ -1384,14 +1365,12 @@
         let isWarning = false;
         let errorMessage = '';
         
-        // Para campos opcionales vacíos
         if (!value && !field.hasAttribute('required')) {
           fieldStatus[field.name] = { isValid: true, isWarning: false };
           showValidationMessage(field, true, false, '✓ Campo opcional - correcto');
           return { isValid: true, isWarning: false };
         }
         
-        // Validar cada regla
         for (const rule of validationRules) {
           const ruleName = rule.trim();
           const config = validationConfig[ruleName];
@@ -1399,7 +1378,6 @@
           
           let param;
           
-          // Obtener el parámetro correcto según la regla
           if (ruleName === 'minLength') {
             param = field.dataset.minLength || field.getAttribute('minlength');
           } else if (ruleName === 'maxLength') {
@@ -1408,7 +1386,6 @@
             param = field.dataset[ruleName.toLowerCase()];
           }
           
-          // Convertir a número si es necesario
           if (param && (ruleName === 'minLength' || ruleName === 'maxLength')) {
             param = parseInt(param);
           }
@@ -1425,15 +1402,12 @@
           }
         }
         
-        // Validaciones adicionales específicas
         if (isValid && value) {
-          // Validar CURP específicamente
           if (field.name === 'curp' && value.length !== 18) {
             isValid = false;
             errorMessage = 'El CURP debe tener exactamente 18 caracteres';
           }
           
-          // Validar email específicamente
           if (field.name === 'email' && value) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(value)) {
@@ -1442,9 +1416,7 @@
             }
           }
           
-          // Validar teléfono específicamente
           if (field.name === 'telefono' && value) {
-            // Limpiar para validación
             const cleanPhone = value.replace(/[^\d]/g, '');
             if (cleanPhone.length !== 10) {
               isValid = false;
@@ -1453,10 +1425,8 @@
           }
         }
         
-        // Actualizar estado del campo
         fieldStatus[field.name] = { isValid, isWarning };
         
-        // Mostrar mensaje apropiado
         if (isValid) {
           if (value.length > 0) {
             showValidationMessage(field, true, false, '✓ Campo válido');
@@ -1470,7 +1440,6 @@
         return { isValid, isWarning };
       }
       
-      // Función para actualizar contadores globales
       function updateGlobalCounters() {
         validCount = 0;
         warningCount = 0;
@@ -1486,12 +1455,10 @@
           }
         });
         
-        // Actualizar UI del resumen
         document.getElementById('validCount').textContent = validCount;
         document.getElementById('warningCount').textContent = warningCount;
         document.getElementById('errorCount').textContent = errorCount;
         
-        // Habilitar/deshabilitar botón de envío
         const allRequiredValid = Array.from(fields)
           .filter(field => field.hasAttribute('required'))
           .every(field => fieldStatus[field.name]?.isValid === true);
@@ -1499,7 +1466,6 @@
         const hasErrors = errorCount > 0;
         submitBtn.disabled = !allRequiredValid || hasErrors;
         
-        // Actualizar texto del botón
         if (submitBtn.disabled) {
           if (hasErrors) {
             submitText.textContent = `Corrige los errores (${errorCount})`;
@@ -1516,7 +1482,6 @@
         }
       }
       
-      // Función para validar todos los campos
       function validateAllFields() {
         fields.forEach(field => {
           validateField(field);
@@ -1524,28 +1489,22 @@
         updateGlobalCounters();
       }
       
-      // Inicializar sistema de validación
       function initValidation() {
-        // Configurar event listeners para cada campo
         fields.forEach(field => {
-          // Validar en tiempo real
           field.addEventListener('input', function() {
             validateField(this);
             updateGlobalCounters();
           });
           
-          // Validar al perder foco
           field.addEventListener('blur', function() {
             validateField(this);
             updateGlobalCounters();
           });
           
-          // Validar al ganar foco (para limpiar)
           field.addEventListener('focus', function() {
             this.style.borderColor = 'var(--primary-purple)';
           });
           
-          // Validación inicial
           const result = validateField(field);
           fieldStatus[field.name] = { 
             isValid: result.isValid, 
@@ -1556,9 +1515,7 @@
         updateGlobalCounters();
       }
       
-      // Mostrar notificación temporal mejorada
       function showTempNotification(message, type = 'info', duration = 4000) {
-        // Eliminar notificaciones anteriores
         document.querySelectorAll('.floating-notification').forEach(n => n.remove());
         
         const notification = document.createElement('div');
@@ -1582,7 +1539,6 @@
         
         document.body.appendChild(notification);
         
-        // Auto-eliminar después del tiempo especificado
         setTimeout(() => {
           if (notification.parentNode) {
             notification.style.animation = 'slideIn 0.3s ease-out reverse';
@@ -1591,7 +1547,6 @@
         }, duration);
       }
       
-      // Mostrar descripción del rol seleccionado
       const roleSelect = document.querySelector('select[name="role"]');
       const roleDescription = document.getElementById('role-description');
       
@@ -1606,11 +1561,9 @@
       
       if (roleSelect) {
         roleSelect.addEventListener('change', updateRoleDescription);
-        // Inicializar descripción
         updateRoleDescription();
       }
       
-      // Validar antes del envío con overlay de carga
       form.addEventListener('submit', function(event) {
         validateAllFields();
         
@@ -1618,7 +1571,6 @@
           event.preventDefault();
           showTempNotification('Hay errores en el formulario. Por favor, corrígelos antes de enviar.', 'error');
           
-          // Enfocar el primer campo con error
           const firstErrorField = Array.from(fields).find(field => 
             fieldStatus[field.name]?.isValid === false
           );
@@ -1627,15 +1579,12 @@
             firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         } else {
-          // Mostrar overlay de carga
           loadingOverlay.style.display = 'flex';
           showTempNotification('Actualizando usuario... Por favor, espere.', 'info');
           
-          // El envío real se realiza aquí
         }
       });
       
-      // Efectos visuales para botones
       document.querySelectorAll('.nav-link, .logout-btn, .btn-submit:not(:disabled), .btn-secondary').forEach(button => {
         button.addEventListener('mouseenter', function() {
           if (!this.disabled) {
@@ -1662,7 +1611,6 @@
         });
       });
       
-      // Formatear teléfono mientras escribe
       const telefonoInput = document.querySelector('input[name="telefono"]');
       if (telefonoInput) {
         telefonoInput.addEventListener('input', function() {
@@ -1684,7 +1632,6 @@
         });
       }
       
-      // Convertir CURP a mayúsculas automáticamente
       const curpInput = document.querySelector('input[name="curp"]');
       if (curpInput) {
         curpInput.addEventListener('input', function() {
@@ -1692,26 +1639,21 @@
         });
       }
       
-      // Inicializar todo
       initCharCounters();
       initValidation();
       
-      // Validación inicial
       validateAllFields();
       
-      // Actualizar contador de campos totales
       const totalFieldsCount = fields.length;
       document.getElementById('totalFields').textContent = totalFieldsCount;
       
-      // Efecto inicial para resumen
       document.querySelectorAll('.validation-stat').forEach((stat, index) => {
         setTimeout(() => {
           stat.classList.add('pulse');
           setTimeout(() => stat.classList.remove('pulse'), 1000);
         }, index * 200);
       });
-      
-      // Tooltips para límites de caracteres
+
       fields.forEach(field => {
         const max = field.getAttribute('maxlength');
         const min = field.getAttribute('minlength');
@@ -1720,7 +1662,6 @@
         }
       });
       
-      // Detectar cambios en el formulario
       let formChanged = false;
       const initialValues = {};
       
@@ -1736,7 +1677,6 @@
         });
       });
       
-      // Prevenir navegación si hay cambios sin guardar
       window.addEventListener('beforeunload', (e) => {
         if (formChanged) {
           e.preventDefault();

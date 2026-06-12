@@ -20,7 +20,7 @@ return new class extends Migration
         $table->string('telefono');
 
         $table->string('genero')->nullable(); // Hombre, Mujer, Otro
-        $table->string('genero_otro')->nullable(); // solo si elige "Otro"
+        $table->string('genero_otro')->nullable();
 
         $table->string('escuela_procedencia')->nullable();
         $table->string('municipio')->nullable();

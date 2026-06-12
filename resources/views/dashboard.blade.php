@@ -67,7 +67,6 @@
   </div>
 
   <script>
-    // Datos desde Laravel para carrera
     const carreraLabels = [
       @foreach($porCarrera as $c)
         '{{ \App\Models\Carrera::find($c->carrera_id)->nombre ?? "Desconocida" }}',
@@ -98,7 +97,6 @@
       }
     });
 
-    // Datos desde Laravel para estados
     const estadoLabels = [
       @foreach($topEstados as $estado)
         '{{ $estado->estado ?? "No definido" }}',

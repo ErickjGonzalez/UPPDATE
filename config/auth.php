@@ -7,8 +7,6 @@ return [
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |
-    | Aquí definimos el guard por defecto y el broker para los passwords.
-    | Normalmente el guard por defecto es 'web' para sesiones de usuarios.
     |
     */
     'defaults' => [
