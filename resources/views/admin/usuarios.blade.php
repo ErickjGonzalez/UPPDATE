@@ -1165,7 +1165,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Configuración de validación - SUPER ROBUSTA
       const validationConfig = {
         required: {
           message: 'Este campo es obligatorio',
@@ -1231,7 +1230,7 @@
             if (/[a-z]/.test(value)) strength++;
             if (/[0-9]/.test(value)) strength++;
             if (/[^A-Za-z0-9]/.test(value)) strength++;
-            return strength >= 3; // Mínimo moderada
+            return strength >= 3;
           }
         },
         passwordMatch: {
@@ -1247,7 +1246,6 @@
         }
       };
 
-      // Elementos del formulario
       const form = document.getElementById('userForm');
       const submitBtn = document.getElementById('submitBtn');
       const submitText = document.getElementById('submitText');
@@ -1258,15 +1256,12 @@
       const togglePassword = document.getElementById('togglePassword');
       const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
       
-      // Contadores para el resumen
       let validCount = 0;
       let warningCount = 0;
       let errorCount = 0;
       
-      // Objeto para almacenar el estado de validación de cada campo
       const fieldStatus = {};
       
-      // Inicializar contadores de caracteres para TODOS los campos
       function initCharCounters() {
         const allTextElements = form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], textarea');
         
@@ -1279,14 +1274,12 @@
           
           if (!currentSpan) return;
           
-          // Actualizar contador inicial
           const currentLength = element.value.length;
           currentSpan.textContent = currentLength;
           if (maxLength) {
             updateCounterStyle(counterId, currentLength, maxLength);
           }
           
-          // Escuchar cambios en tiempo real
           element.addEventListener('input', function() {
             const length = this.value.length;
             if (currentSpan) currentSpan.textContent = length;
@@ -1295,13 +1288,11 @@
               updateCounterStyle(counterId, length, maxLength);
             }
             
-            // Actualizar límite visual en el campo
             this.style.borderColor = this.checkValidity() ? '#e5e7eb' : 'var(--danger-red)';
           });
         });
       }
       
-      // Actualizar estilo del contador de caracteres
       function updateCounterStyle(counterId, current, max) {
         const counter = document.getElementById(counterId);
         if (!counter) return;
@@ -1319,17 +1310,14 @@
         }
       }
       
-      // Función para mostrar mensaje de validación mejorado
       function showValidationMessage(field, isValid, isWarning = false, message = '') {
         const validationId = field.id ? field.id + '-validation' : field.name + '-validation';
         const validationDiv = document.getElementById(validationId);
         
         if (!validationDiv) return;
         
-        // Limpiar clases anteriores
         validationDiv.className = 'validation-message';
         
-        // Determinar icono y clase
         let iconClass = 'fa-info-circle';
         let divClass = 'validation-info';
         
@@ -1349,7 +1337,6 @@
         validationDiv.classList.add(divClass);
         validationDiv.innerHTML = `<i class="fas ${iconClass}"></i><span>${message}</span>`;
         
-        // Actualizar clases del campo
         field.classList.remove('invalid', 'valid', 'warning');
         
         if (!isValid) {
@@ -1367,17 +1354,13 @@
         }
       }
       
-      // Función para validar un campo individual con filtros robustos
       function validateField(field) {
         const validationRules = field.dataset.validation.split(',');
         let value = field.value;
         
-        // Aplicar filtros de limpieza ANTES de validar
         if (field.type !== 'email' && field.type !== 'select-one' && field.name !== 'password' && field.name !== 'password_confirmation') {
-          // Eliminar emojis y caracteres especiales peligrosos
           value = value.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F900}-\u{1F9FF}]/ug, '');
           
-          // Eliminar caracteres especiales según el tipo de campo
           if (field.name === 'name') {
             value = value.replace(/[@#$%^&*_+=|\\:;"'<>,?0-9]/g, '');
           } else if (field.name === 'username') {
@@ -1385,10 +1368,8 @@
             value = value.replace(/[^A-Za-z0-9._-]/g, '');
           }
           
-          // Eliminar caracteres peligrosos para todos
           value = value.replace(/[<>[\]{}]/g, '');
           
-          // Actualizar el valor en el campo si cambió
           if (value !== field.value) {
             field.value = value;
             showTempNotification('Se eliminaron caracteres no permitidos', 'warning');
@@ -1401,14 +1382,12 @@
         let isWarning = false;
         let errorMessage = '';
         
-        // Para campos opcionales vacíos
         if (!value && !field.hasAttribute('required')) {
           fieldStatus[field.name] = { isValid: true, isWarning: false };
           showValidationMessage(field, true, false, '✓ Campo opcional - correcto');
           return { isValid: true, isWarning: false };
         }
         
-        // Validar cada regla
         for (const rule of validationRules) {
           const ruleName = rule.trim();
           const config = validationConfig[ruleName];
@@ -1416,7 +1395,6 @@
           
           let param;
           
-          // Obtener el parámetro correcto según la regla
           if (ruleName === 'minLength') {
             param = field.dataset.minLength || field.getAttribute('minlength');
           } else if (ruleName === 'maxLength') {
@@ -1425,7 +1403,6 @@
             param = field.dataset[ruleName.toLowerCase()];
           }
           
-          // Convertir a número si es necesario
           if (param && (ruleName === 'minLength' || ruleName === 'maxLength')) {
             param = parseInt(param);
           }
@@ -1442,14 +1419,11 @@
           }
         }
         
-        // Validaciones adicionales
         if (isValid && value) {
-          // Validar fortaleza de contraseña y mostrar indicador
           if (field.name === 'password') {
             updatePasswordStrength(value);
           }
           
-          // Validar coincidencia de contraseñas
           if (field.name === 'password_confirmation') {
             const password = document.getElementById('password').value;
             if (value !== password) {
@@ -1459,10 +1433,8 @@
           }
         }
         
-        // Actualizar estado del campo
         fieldStatus[field.name] = { isValid, isWarning };
         
-        // Mostrar mensaje apropiado
         if (isValid) {
           if (value.length > 0) {
             showValidationMessage(field, true, false, '✓ Campo válido');
@@ -1476,7 +1448,6 @@
         return { isValid, isWarning };
       }
       
-      // Actualizar indicador de fortaleza de contraseña
       function updatePasswordStrength(password) {
         const indicator = document.getElementById('passwordStrengthIndicator');
         const bars = indicator.querySelectorAll('.strength-bar');
@@ -1500,7 +1471,6 @@
         });
       }
       
-      // Función para actualizar contadores globales
       function updateGlobalCounters() {
         validCount = 0;
         warningCount = 0;
@@ -1516,12 +1486,10 @@
           }
         });
         
-        // Actualizar UI del resumen
         document.getElementById('validCount').textContent = validCount;
         document.getElementById('warningCount').textContent = warningCount;
         document.getElementById('errorCount').textContent = errorCount;
         
-        // Actualizar clases de los contadores
         const validStat = document.querySelector('.validation-stat:nth-child(1)');
         const warningStat = document.querySelector('.validation-stat:nth-child(2)');
         const errorStat = document.querySelector('.validation-stat:nth-child(3)');
@@ -1532,7 +1500,6 @@
         if (warningCount > 0) warningStat.classList.add('pulse');
         if (errorCount > 0) errorStat.classList.add('pulse');
         
-        // Habilitar/deshabilitar botón de envío
         const allRequiredValid = Array.from(fields)
           .filter(field => field.hasAttribute('required'))
           .every(field => fieldStatus[field.name]?.isValid === true);
@@ -1540,7 +1507,6 @@
         const hasErrors = errorCount > 0;
         submitBtn.disabled = !allRequiredValid || hasErrors;
         
-        // Actualizar texto del botón
         if (submitBtn.disabled) {
           if (hasErrors) {
             submitText.textContent = `Corrige los errores (${errorCount})`;
@@ -1557,7 +1523,6 @@
         }
       }
       
-      // Función para validar todos los campos
       function validateAllFields() {
         fields.forEach(field => {
           validateField(field);
@@ -1565,28 +1530,22 @@
         updateGlobalCounters();
       }
       
-      // Inicializar sistema de validación
       function initValidation() {
-        // Configurar event listeners para cada campo
         fields.forEach(field => {
-          // Validar en tiempo real
           field.addEventListener('input', function() {
             validateField(this);
             updateGlobalCounters();
           });
           
-          // Validar al perder foco
           field.addEventListener('blur', function() {
             validateField(this);
             updateGlobalCounters();
           });
           
-          // Validar al ganar foco (para limpiar)
           field.addEventListener('focus', function() {
             this.style.borderColor = 'var(--primary-purple)';
           });
           
-          // Validación inicial
           const result = validateField(field);
           fieldStatus[field.name] = { 
             isValid: result.isValid, 
@@ -1597,9 +1556,7 @@
         updateGlobalCounters();
       }
       
-      // Mostrar notificación temporal mejorada
       function showTempNotification(message, type = 'info', duration = 4000) {
-        // Eliminar notificaciones anteriores
         document.querySelectorAll('.floating-notification').forEach(n => n.remove());
         
         const notification = document.createElement('div');
@@ -1623,7 +1580,6 @@
         
         document.body.appendChild(notification);
         
-        // Auto-eliminar después del tiempo especificado
         setTimeout(() => {
           if (notification.parentNode) {
             notification.style.animation = 'slideIn 0.3s ease-out reverse';
@@ -1632,7 +1588,6 @@
         }, duration);
       }
       
-      // Toggle visibilidad de contraseña
       togglePassword.addEventListener('click', function() {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
@@ -1647,7 +1602,6 @@
         this.classList.toggle('fa-eye-slash');
       });
       
-      // Validar antes del envío con overlay de carga
       form.addEventListener('submit', function(event) {
         validateAllFields();
         
@@ -1655,7 +1609,6 @@
           event.preventDefault();
           showTempNotification('Hay errores en el formulario. Por favor, corrígelos antes de enviar.', 'error');
           
-          // Enfocar el primer campo con error
           const firstErrorField = Array.from(fields).find(field => 
             fieldStatus[field.name]?.isValid === false
           );
@@ -1664,15 +1617,12 @@
             firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
         } else {
-          // Mostrar overlay de carga
           loadingOverlay.style.display = 'flex';
           showTempNotification('Registrando usuario... Por favor, espere.', 'info');
           
-          // El envío real se realiza aquí
         }
       });
       
-      // Efectos visuales para botones
       document.querySelectorAll('.nav-link, .logout-btn, .btn-submit:not(:disabled), .btn-secondary').forEach(button => {
         button.addEventListener('mouseenter', function() {
           if (!this.disabled) {
@@ -1699,18 +1649,14 @@
         });
       });
       
-      // Inicializar todo
       initCharCounters();
       initValidation();
       
-      // Validación inicial
       validateAllFields();
       
-      // Actualizar contador de campos totales
       const totalFieldsCount = fields.length;
       document.getElementById('totalFields').textContent = totalFieldsCount;
       
-      // Efecto inicial para resumen
       document.querySelectorAll('.validation-stat').forEach((stat, index) => {
         setTimeout(() => {
           stat.classList.add('pulse');
@@ -1718,7 +1664,6 @@
         }, index * 200);
       });
       
-      // Tooltips para límites de caracteres
       fields.forEach(field => {
         const max = field.getAttribute('maxlength');
         const min = field.getAttribute('minlength');
@@ -1727,7 +1672,6 @@
         }
       });
       
-      // Detectar cambios en el formulario
       let formChanged = false;
       const initialValues = {};
       
@@ -1743,7 +1687,6 @@
         });
       });
       
-      // Prevenir navegación si hay cambios sin guardar
       window.addEventListener('beforeunload', (e) => {
         if (formChanged) {
           e.preventDefault();

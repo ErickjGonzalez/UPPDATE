@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EventoConvocatoria extends Model
 {
-        protected $table = 'eventos_convocatorias'; // Asegúrate de que esto esté apuntando al nombre correcto de la tabla
+        protected $table = 'eventos_convocatorias'; 
 
     use HasFactory;
 
@@ -15,7 +15,6 @@ class EventoConvocatoria extends Model
         'titulo', 'descripcion', 'fecha_inicio', 'fecha_fin', 'tipo', 'creador_id'
     ];
 
-    // Relación con el usuario (Rector)
     public function creador()
     {
         return $this->belongsTo(User::class, 'creador_id');

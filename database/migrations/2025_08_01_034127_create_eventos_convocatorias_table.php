@@ -13,8 +13,8 @@ class CreateEventosConvocatoriasTable extends Migration
         $table->id();
         $table->string('titulo');
         $table->text('descripcion');
-        $table->timestamp('fecha_inicio')->nullable(); // Permitir NULL
-        $table->timestamp('fecha_fin')->nullable(); // Permitir NULL
+        $table->timestamp('fecha_inicio')->nullable(); 
+        $table->timestamp('fecha_fin')->nullable(); 
         $table->enum('tipo', ['evento', 'convocatoria']);
         $table->foreignId('creador_id')->constrained('users')->onDelete('cascade');
         $table->timestamps();
